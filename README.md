@@ -83,6 +83,45 @@ Por especificación de seguridad de AOSP, el comando de **Device Owner solo pued
 ---
 
 ### Paso 3: Aprovisionar Privilegios de Device Owner (DO)
-### Paso 4: Activación del Túnel y Restauración de Cuentas
+Ejecuta el comando oficial de aprovisionamiento en la terminal:
+ ```bash
+   adb shell dpm set-device-owner com.example.itsover02/.DeviceAdminReceiver
+```
+* Salida requerida en consola:
+ ```bash
+   Success: Device owner set to package ComponentInfo{com.example.itsover02/com.example.itsover02.DeviceAdminReceiver}
+Active admin set to component {com.example.itsover02/com.example.itsover02.DeviceAdminReceiver}
+```
+(Opcional: Si el dispositivo es Xiaomi / HyperOS, otorga el permiso de autoarranque):
+```bash
+   adb shell appops set com.example.itsover02 10008 allow
+```
 
+---
+
+### Paso 4: Activación del Túnel y Restauración de Cuentas
+1. En la aplicación, pulsa el botón "CONCEDER PERMISO Y ACTIVAR".
+2. Acepta el cuadro de diálogo del sistema operativo para la conexión VPN.
+3. El indicador cambiará a color verde: "FILTRADO ACTIVO".
+4. Listo: Ahora puedes volver a vincular todas tus cuentas (Google, WhatsApp, redes sociales). La aplicación ha quedado anclada al kernel del dispositivo.
+
+---
+
+## 🧪 Pruebas de Funcionamiento Rápido
+**Filtrado en caliente:** Navega desde Chrome a cualquier dominio restringido (ej. tiktok.com). Recibirás un fallo inmediato ERR_NAME_NOT_RESOLVED. Sitios permitidos (google.com, wikipedia.org) cargarán con fluidez normal.
+**Test de Fugas DNS:** Ingresa a browserleaks.com/dns. Todas las consultas DNS detectadas (IPv4 e IPv6) pertenecerán al resolver upstream configurado (Google LLC), con cero fugas hacia tu proveedor de internet móvil.
+**Tolerancia a Reinicios:** Reinicia el teléfono (adb reboot). Al desbloquear la pantalla con tu PIN, el icono de la llave VPN se levantará por sí solo sin abrir la aplicación.
+**Protección Anti-Desinstalación:** Intenta desinstalar la app desde el cajón de aplicaciones o los Ajustes; el botón estará inhabilitado o el sistema arrojará "No se pudo eliminar".
+
+---
+
+## 🚨 Salida de Emergencia (Desinstalación Segura por ADB)
+Al operar como Device Owner, la aplicación no puede ser desinstalada por métodos tradicionales. Para desinstalarla durante fases de desarrollo o mantenimiento, conecta el dispositivo por USB y ejecuta los dos comandos de la Llave Maestra:
+```bash
+# 1. Enviar el broadcast protegido que revoca el rol de Device Owner y desactiva los candados
+adb shell am broadcast -a com.example.itsover02.EMERGENCY_UNLOCK
+
+# 2. Desinstalar el paquete limpiamente
+adb uninstall com.example.itsover02
+```
 
