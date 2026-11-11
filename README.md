@@ -108,10 +108,10 @@ Active admin set to component {com.example.itsover02/com.example.itsover02.Devic
 ---
 
 ## 🧪 Pruebas de Funcionamiento Rápido
-**Filtrado en caliente:** Navega desde Chrome a cualquier dominio restringido (ej. tiktok.com). Recibirás un fallo inmediato ERR_NAME_NOT_RESOLVED. Sitios permitidos (google.com, wikipedia.org) cargarán con fluidez normal.
-**Test de Fugas DNS:** Ingresa a browserleaks.com/dns. Todas las consultas DNS detectadas (IPv4 e IPv6) pertenecerán al resolver upstream configurado (Google LLC), con cero fugas hacia tu proveedor de internet móvil.
-**Tolerancia a Reinicios:** Reinicia el teléfono (adb reboot). Al desbloquear la pantalla con tu PIN, el icono de la llave VPN se levantará por sí solo sin abrir la aplicación.
-**Protección Anti-Desinstalación:** Intenta desinstalar la app desde el cajón de aplicaciones o los Ajustes; el botón estará inhabilitado o el sistema arrojará "No se pudo eliminar".
+* **Filtrado en caliente:** Navega desde Chrome a cualquier dominio restringido (ej. tiktok.com). Recibirás un fallo inmediato ERR_NAME_NOT_RESOLVED. Sitios permitidos (google.com, wikipedia.org) cargarán con fluidez normal.
+* **Test de Fugas DNS:** Ingresa a browserleaks.com/dns. Todas las consultas DNS detectadas (IPv4 e IPv6) pertenecerán al resolver upstream configurado (Google LLC), con cero fugas hacia tu proveedor de internet móvil.
+* **Tolerancia a Reinicios:** Reinicia el teléfono (adb reboot). Al desbloquear la pantalla con tu PIN, el icono de la llave VPN se levantará por sí solo sin abrir la aplicación.
+* **Protección Anti-Desinstalación:** Intenta desinstalar la app desde el cajón de aplicaciones o los Ajustes; el botón estará inhabilitado o el sistema arrojará "No se pudo eliminar".
 
 ---
 
