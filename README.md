@@ -59,6 +59,30 @@ Por especificación de seguridad de AOSP, el comando de **Device Owner solo pued
 ---
 
 ### Paso 1: Clonar y Abrir el Proyecto
-1. Clona este repositorio:
-   ```bash
-   git clone https://github.com/TU_USUARIO/TU_REPOSITORIO.git
+
+1. Clona el repositorio y guardalo en la ubicación de tu preferencia.
+2. Entra a Android Studio e ingresa a la carpeta donde clonaste el repositorio
+3. Permite que Gradle sincronice las dependencias (Sync Project with Gradle Files)
+
+---
+
+### Paso 2: Compilar e Instalar el Binario
+
+1. Conecta el dispositivo a la computadora por USB.
+2. En la barra superior de Android Studio, ve a:
+**Build > Build Bundle(s) / APK(s) > Build APK(s)**.
+3. Abre la terminal de Android Studio y despliega el APK:
+ ```bash
+   adb install -r -d app\build\outputs\apk\debug\app-debug.apk 
+```
+4. Inicializa el proceso en el teléfono abriendo la actividad principal:
+ ```bash
+   adb shell am start -n com.example.itsover02/.MainActivity
+```
+
+---
+
+### Paso 3: Aprovisionar Privilegios de Device Owner (DO)
+### Paso 4: Activación del Túnel y Restauración de Cuentas
+
+
