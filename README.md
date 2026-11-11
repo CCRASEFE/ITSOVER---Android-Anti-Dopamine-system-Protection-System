@@ -1,2 +1,64 @@
-﻿# ITSOVER - Versión 01
-test reade v1
+﻿# 🛡️ DNS Shield (ITS OVER) — v1.0.0
+> **Sistema local de filtrado DNS inmutable, persistente mediante Device Owner (MDM) y Dual-Stack (IPv4 / IPv6) para Android.**
+
+[![Android](https://img.shields.io/badge/Platform-Android_8.0+_--_14+-3DDC84?style=flat&logo=android&logoColor=white)](https://developer.android.com)
+[![Kotlin](https://img.shields.io/badge/Language-Kotlin_2.0+-7F52FF?style=flat&logo=kotlin&logoColor=white)](https://kotlinlang.org)
+[![Compose](https://img.shields.io/badge/UI-Jetpack_Compose-4285F4?style=flat&logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
+[![Security](https://img.shields.io/badge/Security-Device_Owner_%7C_MDM-red?style=flat)](SECURITY.md)
+
+---
+
+## 📌 Visión General
+
+**DNS Shield** es una solución nativa de ciberseguridad para dispositivos Android diseñada para operar como un **DNS Sinkhole local** autosuficiente, inmutable e inamovible. 
+
+A diferencia de las aplicaciones de filtrado convencionales o servicios VPN comerciales:
+* **No depende de servidores remotos:** Toda la inspección de paquetes ocurre directamente en la memoria RAM del dispositivo dentro de un túnel `VpnService` local.
+* **Inmutabilidad Absoluta:** No expone interfaces para desactivar dominios ni pausar el escudo.
+* **Control a Nivel de Sistema Operativo:** Aprovecha privilegios de **Device Owner (MDM)** para anclar la VPN como *Always-On*, bloquear su desinstalación física y desactivar vías de evasión en los Ajustes del sistema.
+
+---
+
+## 🚀 Características Principales
+
+* 🔒 **Filtrado Dual-Stack (IPv4 / IPv6):** Inspección de consultas DNS en puerto 53 UDP tanto en direcciones IPv4 (`10.0.0.1`) como IPv6 (`fd00::1`) con cálculo de checksums RFC 8200 (cero fugas de red).
+* ⚡ **Alto Rendimiento en Streaming:** Motor optimizado con corrutinas concurrentes capaz de evaluar más de **11.000 dominios** en microsegundos sin superar el límite de bytecode de 64 KB de la JVM.
+* 🛡️ **Blindaje de Device Owner:** Modo *Always-On VPN* inmutable por el usuario, tolerante a reinicios del teléfono (`BOOT_COMPLETED` / `LOCKED_BOOT_COMPLETED`) y a actualizaciones del APK (`MY_PACKAGE_REPLACED`).
+* 🚫 **Mitigación de Evasiones:** Bloqueo de DNS Privado del sistema (DoT), señalización mediante Dominio Canario de Mozilla (`use-application-dns.net`) y directivas administradas para navegadores comerciales.
+* 🧯 **Llave Maestra de Emergencia:** Receptor protegido que permite revocar los candados corporativos mediante un comando seguro por ADB en caso de mantenimiento.
+
+---
+
+## 📚 Documentación Técnica Adicional
+
+* 📐 [**ARCHITECTURE.md**](ARCHITECTURE.md) — Documentación profunda sobre diseño de software, manejo de sockets de bajo nivel, parsing binario de paquetes y ciclo de vida de componentes.
+* 🔐 [**SECURITY.md**](SECURITY.md) — Modelo de amenazas, análisis forense de bypasses (Firefox vs. Opera), pruebas de laboratorio y estado de las brechas de seguridad.
+
+---
+
+## 🛠️ Guía de Despliegue y Puesta en Marcha
+
+Sigue esta guía paso a paso para compilar, aprovisionar y ejecutar el proyecto desde cero utilizando Android Studio.
+
+### Requisitos
+* **Android Studio** (Koala, Ladybug o superior) con SDK 34+.
+* **Dispositivo físico o emulador** ejecutando Android 8.0+ (API 26+) hasta Android 14+ (probado exhaustivamente en Xiaomi HyperOS / MIUI).
+* Cable USB y herramientas de línea de comandos (`adb`) configuradas en el PATH.
+
+---
+
+### Paso 0: Preparación Obligatoria del Teléfono (¡Crítico!)
+Por especificación de seguridad de AOSP, el comando de **Device Owner solo puede asignarse si el dispositivo no contiene cuentas de usuario activas**:
+
+1. Ve a **Ajustes > Contraseñas y Cuentas** (o *Cuentas y Sincronización*).
+2. **Elimina temporalmente** todas las cuentas existentes (Google, WhatsApp, Xiaomi/Mi Account, Outlook, etc.).  
+   *(Nota: Una vez ejecutado el comando del Paso 3, **podrás volver a iniciar sesión en todas tus cuentas normalmente** y el blindaje persistirá).*
+3. Activa las **Opciones de desarrollador** y habilita la **Depuración USB**.
+   * *En dispositivos Xiaomi / POCO:* Activa también **Instalar vía USB** y **Depuración USB (Ajustes de seguridad)**.
+
+---
+
+### Paso 1: Clonar y Abrir el Proyecto
+1. Clona este repositorio:
+   ```bash
+   git clone https://github.com/TU_USUARIO/TU_REPOSITORIO.git
