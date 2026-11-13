@@ -81,5 +81,25 @@ app/src/main/java/com/example/itsover02/
 
 En la especificación de la JVM (Section 4.7.3), ningún método compilado puede exceder 65.535 bytes de bytecode.
 
-* **Problema:** Declarar colecciones estáticas en código Kotlin con miles de literales (hashSetOf("...", "...")) hace que el compilador inserte instrucciones LDC en el método <clinit>, provocando MethodTooLargeException.
-* **Solución:** La lista de 11.000+ dominios se empaqueta sellada en app/src/main/assets/blocklist.txt. BlocklistRepository.loadFromAssets() la consume mediante BufferedReader.useLines() en streaming durante el arranque del servicio, poblando un HashSet<String>(15000) en ~15 milisegundos con cero impacto de bytecode y un consumo de heap de solo 13.7 MB.
+* **Problema:** Declarar colecciones estáticas en código Kotlin con miles de literales (`hashSetOf("...", "...")`) hace que el compilador inserte instrucciones `LDC` en el método `<clinit>`, provocando `MethodTooLargeException`.
+* **Solución:** La lista de **11.000+** dominios se empaqueta sellada en `app/src/main/assets/blocklist.txt`. `BlocklistRepository.loadFromAssets()` la consume mediante `BufferedReader.useLines()` en streaming durante el arranque del servicio, poblando un `HashSet<String>(15000)` en ~15 milisegundos con cero impacto de bytecode y un consumo de heap de solo **13.7 MB** aproximandamente.
+
+### B. Algoritmo de Matching Recursivo O(Labels)
+
+Para verificar si un dominio o cualquiera de sus subdominios está bloqueado, no se utilizan expresiones regulares pesadas:
+
+```bash
+fun isBlocked(domain: String): Boolean {
+    val normalized = domain.lowercase().trimEnd('.')
+    if (BLOCKED_DOMAINS.contains(normalized)) return true
+
+    var dotIndex = normalized.indexOf('.')
+    while (dotIndex != -1) {
+        val parentDomain = normalized.substring(dotIndex + 1)
+        if (BLOCKED_DOMAINS.contains(parentDomain)) return true
+        dotIndex = normalized.indexOf('.', dotIndex + 1)
+    }
+    return false
+}
+```
+Complejidad temporal acotada a la cantidad de subdominios (L≤5), ejecutándose en nanosegundos por paquete.
