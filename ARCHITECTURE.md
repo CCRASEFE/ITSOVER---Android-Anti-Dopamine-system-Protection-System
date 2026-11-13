@@ -53,3 +53,22 @@ El sistema intercepta exclusivamente las transacciones DNS sin procesar el tráf
 │   └── [Tráfico Web TCP 80/443 (allowBypass)]:                          │
 │       Sale directo a la antena sin pasar por la CPU de la app          │
 └────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 3. Módulos y Responsabilidades del Código
+```text
+app/src/main/java/com/example/itsover02/
+├── MainActivity.kt                      # UI mínima reactiva en Compose y solicitud inicial de VpnService.
+├── MainViewModel.kt                     # Exposición del estado StateFlow del servicio hacia la UI.
+├── LocalDnsBlockerService.kt            # Motor principal del túnel TUN, loop de red, y resolución upstream.
+├── BlocklistRepository.kt               # Repositorio inmutable en memoria con streaming desde assets.
+├── DeviceAdminReceiver.kt               # Orquestador de políticas corporativas DevicePolicyManager.
+├── BootReceiver.kt                      # Receptor Direct-Boot Aware para autoarranque del sistema.
+├── EmergencyUninstallReceiver.kt        # Receptor de contingencia para revocación de permisos MDM.
+├── MdmPolicyManager.kt                  # Inyector de Managed Configurations en navegadores comerciales.
+├── AppRestrictionManager.kt             # Gestor de listas negras de paquetes y suspensión Device Owner.
+├── PackageChangeReceiver.kt             # Centinela reactivo ante eventos PACKAGE_ADDED.
+└── EvasiveAppBlockerAccessibilityService.kt # Inspector de UI en tiempo real para detección heurística.
+```
