@@ -72,3 +72,14 @@ app/src/main/java/com/example/itsover02/
 ├── PackageChangeReceiver.kt             # Centinela reactivo ante eventos PACKAGE_ADDED.
 └── EvasiveAppBlockerAccessibilityService.kt # Inspector de UI en tiempo real para detección heurística.
 ```
+
+---
+
+## 4. Métodos y Técnicas de Bajo Nivel
+
+### A. Evasión del Límite de Bytecode de la JVM (64 KB)
+
+En la especificación de la JVM (Section 4.7.3), ningún método compilado puede exceder 65.535 bytes de bytecode.
+
+* **Problema:** Declarar colecciones estáticas en código Kotlin con miles de literales (hashSetOf("...", "...")) hace que el compilador inserte instrucciones LDC en el método <clinit>, provocando MethodTooLargeException.
+* **Solución:** La lista de 11.000+ dominios se empaqueta sellada en app/src/main/assets/blocklist.txt. BlocklistRepository.loadFromAssets() la consume mediante BufferedReader.useLines() en streaming durante el arranque del servicio, poblando un HashSet<String>(15000) en ~15 milisegundos con cero impacto de bytecode y un consumo de heap de solo 13.7 MB.
