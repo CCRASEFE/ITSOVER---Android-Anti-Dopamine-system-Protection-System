@@ -103,3 +103,20 @@ fun isBlocked(domain: String): Boolean {
 }
 ```
 Complejidad temporal acotada a la cantidad de subdominios (L≤5), ejecutándose en nanosegundos por paquete.
+
+### C. Parseo Binario DNS (RFC 1035) y Creación Sintética de NXDOMAIN
+
+La extracción de QNAME salta los 12 bytes de encabezado fijo de DNS y procesa los labels prefijados por su longitud:
+
+* `[0x06] t i k t o k [0x03] c o m [0x00]` -> `tiktok.com`.
+* Detecta punteros de compresión (`labelLen & 0xC0 == 0xC0`).
+* La respuesta de bloqueo clona el ID de transacción original (bytes 0-1) y fija los flags en `0x8183` (Response + Recursion Available + Name Error / NXDOMAIN).
+
+### D. Matemáticas de Checksum en Ensamblado de Paquetes
+
+1. IPv4 Header Checksum: Complemento a uno de la suma de palabras de 16 bits sobre los 20 bytes de cabecera IPv4.
+2. IPv6 UDP Checksum (RFC 8200): Obligatorio en IPv6. Se calcula mediante una pseudo-cabecera virtual de 40 bytes (IP origen de 128 bits + IP destino de 128 bits + longitud UDP de 32 bits + protocolo 17) sumada al payload UDP. Si el resultado es `0`, se transmite como `0xFFFF`.
+
+### E. Integración con Direct Boot (FBE)
+
+Tanto `LocalDnsBlockerService` como `BootReceiver` cuentan con `android:directBootAware="true"`. Al arrancar el teléfono, operan utilizando `context.createDeviceProtectedStorageContext()`, permitiendo que el cortafuegos comience a filtrar tráfico incluso antes de que el usuario ingrese su PIN por primera vez en la pantalla de bloqueo.
