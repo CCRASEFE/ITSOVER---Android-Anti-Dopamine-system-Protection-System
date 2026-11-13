@@ -1,4 +1,3 @@
-```markdown
 # 📐 Arquitectura del Sistema y Métodos de Ingeniería — DNS Shield
 
 Este documento detalla el diseño técnico, las decisiones arquitectónicas, el flujo de procesamiento de paquetes y las tecnologías que componen **DNS Shield v1.0.0**.
